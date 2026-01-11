@@ -290,7 +290,7 @@ async def create_order(order: OrderCreate, request: Request, session_token: Opti
         "user_id": user.user_id,
         "items": [item.model_dump() for item in order.items],
         "grand_total": order.grand_total,
-        "status": "Order Confirmed",
+        "status": "Pending",
         "user_name": user.name,
         "user_email": user.email,
         "user_phone": user.phone_number,
