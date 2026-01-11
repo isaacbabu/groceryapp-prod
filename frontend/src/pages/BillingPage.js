@@ -1,0 +1,297 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { axiosInstance } from '@/App';
+import { Menu, Plus, Trash2, Search, LogOut, User, ShoppingBag, Info, LayoutDashboard } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { toast } from 'sonner';
+
+const BillingPage = ({ user }) => {
+  const navigate = useNavigate();
+  const [items, setItems] = useState([]);
+  const [billingRows, setBillingRows] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [grandTotal, setGrandTotal] = useState(0);
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  useEffect(() => {
+    const total = billingRows.reduce((sum, row) => sum + row.total, 0);
+    setGrandTotal(total);
+  }, [billingRows]);
+
+  useEffect(() => {
+    if (showModal && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [showModal]);
+
+  const fetchItems = async () => {
+    try {
+      const response = await axiosInstance.get('/items');
+      setItems(response.data);
+    } catch (error) {
+      toast.error('Failed to load items');
+    }
+  };
+
+  const addItemToBill = (item) => {
+    const newRow = {
+      id: Date.now(),
+      item_id: item.item_id,
+      item_name: item.name,
+      rate: item.rate,
+      quantity: 1,
+      total: item.rate,
+    };
+    setBillingRows([...billingRows, newRow]);
+    setShowModal(false);
+    setSearchQuery('');
+    toast.success(`${item.name} added to bill`);
+    
+    setTimeout(() => {
+      const input = document.querySelector(`input[data-testid="qty-input-${billingRows.length}"]`);
+      if (input) input.focus();
+    }, 100);
+  };
+
+  const updateQuantity = (id, quantity) => {
+    const qty = parseInt(quantity) || 0;
+    setBillingRows(billingRows.map(row => 
+      row.id === id ? { ...row, quantity: qty, total: row.rate * qty } : row
+    ));
+  };
+
+  const deleteRow = (id) => {
+    setBillingRows(billingRows.filter(row => row.id !== id));
+    toast.success('Item removed from bill');
+  };
+
+  const placeOrder = async () => {
+    if (billingRows.length === 0) {
+      toast.error('Add items to the bill first');
+      return;
+    }
+
+    if (!user.phone_number || !user.home_address) {
+      toast.error('Please complete your profile first');
+      navigate('/profile');
+      return;
+    }
+
+    try {
+      await axiosInstance.post('/orders', {
+        items: billingRows,
+        grand_total: grandTotal,
+      });
+      toast.success('Order placed successfully!');
+      setBillingRows([]);
+      setGrandTotal(0);
+    } catch (error) {
+      toast.error('Failed to place order');
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.post('/auth/logout');
+      toast.success('Logged out successfully');
+      navigate('/login');
+    } catch (error) {
+      toast.error('Logout failed');
+    }
+  };
+
+  const filteredItems = items.filter(item =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="h-screen flex flex-col md:flex-row overflow-hidden bg-zinc-50">
+      {/* Sidebar */}
+      <Sheet>
+        <div className="md:hidden fixed top-4 left-4 z-50">
+          <SheetTrigger asChild>
+            <Button data-testid="menu-btn" variant="outline" size="icon" className="bg-white shadow-sm">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+        </div>
+        
+        <SheetContent side="left" className="w-72 p-0">
+          <SheetHeader className="p-6 border-b border-zinc-200">
+            <SheetTitle className="font-primary text-xl font-bold text-emerald-950">Menu</SheetTitle>
+          </SheetHeader>
+          <nav className="p-4 space-y-2">
+            <Button data-testid="nav-profile-btn" onClick={() => navigate('/profile')} variant="ghost" className="w-full justify-start font-secondary">
+              <User className="mr-2 h-4 w-4" /> User Profile
+            </Button>
+            <Button data-testid="nav-orders-btn" onClick={() => navigate('/orders')} variant="ghost" className="w-full justify-start font-secondary">
+              <ShoppingBag className="mr-2 h-4 w-4" /> Placed Orders
+            </Button>
+            <Button data-testid="nav-about-btn" onClick={() => navigate('/about')} variant="ghost" className="w-full justify-start font-secondary">
+              <Info className="mr-2 h-4 w-4" /> About App
+            </Button>
+            {user?.is_admin && (
+              <Button data-testid="nav-admin-btn" onClick={() => navigate('/admin')} variant="ghost" className="w-full justify-start font-secondary">
+                <LayoutDashboard className="mr-2 h-4 w-4" /> Admin Dashboard
+              </Button>
+            )}
+            <Button data-testid="logout-btn" onClick={handleLogout} variant="ghost" className="w-full justify-start text-rose-600 hover:text-rose-700 hover:bg-rose-50 font-secondary">
+              <LogOut className="mr-2 h-4 w-4" /> Logout
+            </Button>
+          </nav>
+        </SheetContent>
+      </Sheet>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col h-full relative pt-16 md:pt-0">
+        {/* Header */}
+        <div className="bg-white border-b border-zinc-200 px-4 md:px-8 py-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold font-primary text-emerald-950 tracking-tight">Billing</h1>
+              <p className="text-sm text-zinc-500 font-secondary mt-1">Create new bill</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-zinc-400 uppercase tracking-widest font-primary font-bold">User</p>
+              <p className="text-sm font-medium text-emerald-900 font-secondary">{user?.name}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Table Container */}
+        <div className="flex-1 overflow-auto p-4 md:p-8">
+          <div className="w-full border border-zinc-200 rounded-xl overflow-hidden bg-white shadow-sm">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-zinc-50 border-b border-zinc-200">
+                  <th className="h-12 px-4 text-left align-middle font-primary text-xs font-bold text-zinc-500 uppercase tracking-wider">Sl No</th>
+                  <th className="h-12 px-4 text-left align-middle font-primary text-xs font-bold text-zinc-500 uppercase tracking-wider">Item Name</th>
+                  <th className="h-12 px-4 text-left align-middle font-primary text-xs font-bold text-zinc-500 uppercase tracking-wider">Rate</th>
+                  <th className="h-12 px-4 text-left align-middle font-primary text-xs font-bold text-zinc-500 uppercase tracking-wider">Quantity</th>
+                  <th className="h-12 px-4 text-left align-middle font-primary text-xs font-bold text-zinc-500 uppercase tracking-wider">Total</th>
+                  <th className="h-12 px-4 text-left align-middle font-primary text-xs font-bold text-zinc-500 uppercase tracking-wider"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {billingRows.map((row, index) => (
+                  <tr key={row.id} className="border-b border-zinc-100 hover:bg-zinc-50/50 transition-colors group" data-testid={`billing-row-${index}`}>
+                    <td className="p-4 align-middle font-mono text-sm text-zinc-700">{index + 1}</td>
+                    <td className="p-4 align-middle font-secondary text-sm text-zinc-700">{row.item_name}</td>
+                    <td className="p-4 align-middle font-mono text-sm text-emerald-700">₹{row.rate.toFixed(2)}</td>
+                    <td className="p-4 align-middle">
+                      <Input
+                        data-testid={`qty-input-${index}`}
+                        type="number"
+                        min="1"
+                        value={row.quantity}
+                        onChange={(e) => updateQuantity(row.id, e.target.value)}
+                        className="h-9 w-20 bg-transparent border border-zinc-200 rounded-md px-3 py-1 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono text-right"
+                      />
+                    </td>
+                    <td className="p-4 align-middle font-mono text-sm font-medium text-emerald-900">₹{row.total.toFixed(2)}</td>
+                    <td className="p-4 align-middle">
+                      <button
+                        data-testid={`delete-row-btn-${index}`}
+                        onClick={() => deleteRow(row.id)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity text-zinc-400 hover:text-rose-500 p-2"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-4 flex justify-center">
+            <Button
+              data-testid="add-item-btn"
+              onClick={() => setShowModal(true)}
+              variant="outline"
+              size="icon"
+              className="h-12 w-12 rounded-full border-2 border-emerald-900 text-emerald-900 hover:bg-emerald-900 hover:text-white transition-all"
+            >
+              <Plus className="h-6 w-6" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="h-24 bg-white border-t border-zinc-200 flex items-center justify-between px-4 md:px-8 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20">
+          <div className="flex flex-col items-end">
+            <p className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-1 font-primary">Grand Total</p>
+            <p className="text-4xl md:text-5xl font-mono font-bold text-emerald-950 tracking-tighter" data-testid="grand-total">₹{grandTotal.toFixed(2)}</p>
+          </div>
+          <Button
+            data-testid="place-order-btn"
+            onClick={placeOrder}
+            className="bg-lime-400 hover:bg-lime-500 text-lime-950 h-14 px-8 text-lg font-primary font-bold transition-all"
+          >
+            Place Order
+          </Button>
+        </div>
+      </div>
+
+      {/* Item Selection Modal */}
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent className="bg-white border-none shadow-2xl sm:max-w-[800px] p-0 overflow-hidden rounded-2xl">
+          <DialogHeader className="p-6 border-b border-zinc-100 bg-zinc-50/50">
+            <DialogTitle className="text-2xl font-bold font-primary text-emerald-950">Select Item</DialogTitle>
+          </DialogHeader>
+          
+          <div className="p-6">
+            <div className="relative mb-6">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-zinc-400" />
+              <Input
+                ref={searchInputRef}
+                data-testid="item-search-input"
+                type="text"
+                placeholder="Search items..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-12 font-secondary"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto">
+              {filteredItems.map((item) => (
+                <div
+                  key={item.item_id}
+                  data-testid={`item-card-${item.item_id}`}
+                  className="group relative flex flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white hover:border-emerald-500/50 hover:shadow-lg transition-all cursor-pointer"
+                  onClick={() => addItemToBill(item)}
+                >
+                  <div className="aspect-[4/3] w-full overflow-hidden bg-zinc-100">
+                    <img
+                      src={item.image_url}
+                      alt={item.name}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-primary font-bold text-zinc-900 truncate">{item.name}</h3>
+                    <p className="font-mono text-emerald-700 font-medium mt-1">₹{item.rate.toFixed(2)}</p>
+                  </div>
+                  <div className="absolute bottom-4 right-4 h-8 w-8 rounded-full bg-lime-400 text-lime-950 flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all shadow-sm">
+                    <Plus className="h-4 w-4" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+export default BillingPage;
