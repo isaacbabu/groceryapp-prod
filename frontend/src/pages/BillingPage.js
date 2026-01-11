@@ -47,8 +47,8 @@ const BillingPage = ({ user }) => {
       item_id: item.item_id,
       item_name: item.name,
       rate: item.rate,
-      quantity: 1,
-      total: item.rate,
+      quantity: '',
+      total: 0,
     };
     setBillingRows([...billingRows, newRow]);
     setShowModal(false);
