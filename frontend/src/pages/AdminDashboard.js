@@ -251,6 +251,7 @@ const AdminDashboard = ({ user }) => {
             ))}
           </div>
         )}
+        </div>
       </div>
 
       <AlertDialog open={!!deleteOrderId} onOpenChange={() => setDeleteOrderId(null)}>
