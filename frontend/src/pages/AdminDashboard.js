@@ -52,6 +52,18 @@ const AdminDashboard = ({ user }) => {
     }
   };
 
+  const handleConfirmOrder = async (orderId) => {
+    try {
+      await axiosInstance.patch(`/admin/orders/${orderId}/confirm`);
+      setOrders(orders.map(order => 
+        order.order_id === orderId ? { ...order, status: 'Order Confirmed' } : order
+      ));
+      toast.success('Order confirmed successfully');
+    } catch (error) {
+      toast.error('Failed to confirm order');
+    }
+  };
+
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-zinc-50">
