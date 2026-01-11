@@ -41,7 +41,7 @@ const AboutPage = () => {
           <div className="p-8 space-y-8">
             <div className="text-center">
               <p className="text-xl text-emerald-900 font-secondary font-medium italic mb-4">
-                "The products you need, at prices you'll love, delivered with care."
+                &ldquo;The products you need, at prices you&apos;ll love, delivered with care.&rdquo;
               </p>
               <p className="text-zinc-600 font-secondary text-lg">
                 This is our online ordering platform
