@@ -244,6 +244,7 @@ const AdminItems = ({ user }) => {
             ))}
           </div>
         )}
+        </div>
       </div>
 
       {/* Add/Edit Item Modal */}
