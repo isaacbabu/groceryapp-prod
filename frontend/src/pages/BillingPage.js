@@ -56,7 +56,7 @@ const BillingPage = ({ user }) => {
   };
 
   const updateQuantity = (id, quantity) => {
-    const qty = parseInt(quantity) || 0;
+    const qty = parseFloat(quantity) || 0;
     setBillingRows(billingRows.map(row => 
       row.id === id ? { ...row, quantity: qty, total: row.rate * qty } : row
     ));
