@@ -177,6 +177,7 @@ const PlacedOrders = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
     </div>
   );
 };
