@@ -17,21 +17,6 @@ const BillingPage = ({ user }) => {
   const [grandTotal, setGrandTotal] = useState(0);
   const searchInputRef = useRef(null);
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  useEffect(() => {
-    const total = billingRows.reduce((sum, row) => sum + row.total, 0);
-    setGrandTotal(total);
-  }, [billingRows]);
-
-  useEffect(() => {
-    if (showModal && searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, [showModal]);
-
   const fetchItems = async () => {
     try {
       const response = await axiosInstance.get('/items');
@@ -40,6 +25,10 @@ const BillingPage = ({ user }) => {
       toast.error('Failed to load items');
     }
   };
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
 
   const addItemToBill = (item) => {
     const newRow = {
