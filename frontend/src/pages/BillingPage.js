@@ -236,7 +236,7 @@ const BillingPage = ({ user }) => {
             Place Order
           </Button>
         </div>
-      </div>
+        </div>
 
       {/* Item Selection Modal */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
