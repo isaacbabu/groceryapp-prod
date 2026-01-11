@@ -25,16 +25,25 @@ const AboutPage = () => {
             <div className="w-16 h-16 bg-lime-400 rounded-full flex items-center justify-center mx-auto mb-4">
               <Info className="h-8 w-8 text-lime-950" />
             </div>
-            <h1 className="text-3xl font-bold font-primary text-white">About Grocery Billing</h1>
-            <p className="text-emerald-100 font-secondary mt-2">Modern ledger for your grocery store</p>
+            <h1 className="text-3xl font-bold font-primary text-white">Emmanuel Agencies</h1>
+            <p className="text-emerald-100 font-secondary mt-2 text-lg">Online Grocery Shopping</p>
           </div>
 
           <div className="p-8 space-y-8">
+            <div className="text-center">
+              <p className="text-xl text-emerald-900 font-secondary font-medium italic mb-4">
+                "The products you need, at prices you'll love, delivered with care."
+              </p>
+              <p className="text-zinc-600 font-secondary text-lg">
+                This is our online ordering platform
+              </p>
+            </div>
+
             <div>
-              <h2 className="text-2xl font-bold font-primary text-emerald-950 mb-4">Welcome to Grocery Billing</h2>
+              <h2 className="text-2xl font-bold font-primary text-emerald-950 mb-4">Welcome to Emmanuel Agencies</h2>
               <p className="text-zinc-600 font-secondary leading-relaxed">
-                A professional billing application designed specifically for grocery stores. Our platform combines 
-                the precision of traditional accounting software with modern, user-friendly design.
+                A professional online ordering platform designed specifically for grocery stores. Our platform combines 
+                the precision of traditional accounting software with modern, user-friendly design to make your shopping experience seamless.
               </p>
             </div>
 
