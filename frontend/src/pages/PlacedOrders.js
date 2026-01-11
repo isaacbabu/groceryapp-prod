@@ -59,7 +59,16 @@ const PlacedOrders = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 py-8 px-4">
+    <div className="min-h-screen bg-zinc-50">
+      {/* Header */}
+      <div className="bg-emerald-900 border-b border-emerald-950 px-4 md:px-8 py-4 shadow-lg">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-xl md:text-2xl font-bold font-primary text-white tracking-tight">Emmanuel Agencies</h1>
+          <p className="text-sm text-emerald-100 font-secondary mt-0.5">Online Grocery Shopping</p>
+        </div>
+      </div>
+
+      <div className="py-8 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6 flex items-center justify-between">
           <Button
