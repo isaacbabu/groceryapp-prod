@@ -249,7 +249,6 @@ const BillingPage = ({ user }) => {
             <div className="relative mb-6">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-zinc-400" />
               <Input
-                ref={searchInputRef}
                 data-testid="item-search-input"
                 type="text"
                 placeholder="Search items..."
