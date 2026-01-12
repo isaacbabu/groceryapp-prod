@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class GroceryBillingAPITester:
-    def __init__(self, base_url="https://bill-master-60.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://grocery-helper-4.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.user_token = "test_session_1768150037995"
         self.admin_token = "admin_session_1768150043790"
@@ -311,7 +311,7 @@ class GroceryBillingAPITester:
 
 def main():
     print("🚀 Starting Grocery Billing API Tests")
-    print(f"Backend URL: https://bill-master-60.preview.emergentagent.com/api")
+    print(f"Backend URL: https://grocery-helper-4.preview.emergentagent.com/api")
     print(f"Test started at: {datetime.now()}")
     
     tester = GroceryBillingAPITester()
