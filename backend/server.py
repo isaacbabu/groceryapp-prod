@@ -77,6 +77,23 @@ class OrderCreate(BaseModel):
     items: List[OrderItem]
     grand_total: float
 
+class CartItem(BaseModel):
+    item_id: str
+    item_name: str
+    rate: float
+    quantity: float
+    total: float
+
+class Cart(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    cart_id: str
+    user_id: str
+    items: List[CartItem]
+    updated_at: datetime
+
+class CartUpdate(BaseModel):
+    items: List[CartItem]
+
 # Helper function to get user from cookie or header
 async def get_current_user(request: Request, session_token: Optional[str] = Cookie(None)) -> User:
     token = session_token
