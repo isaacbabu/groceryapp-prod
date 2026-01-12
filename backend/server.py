@@ -329,7 +329,15 @@ async def update_cart(cart_data: CartUpdate, request: Request, session_token: Op
         cart_doc["cart_id"] = f"cart_{uuid.uuid4().hex[:12]}"
         await db.carts.insert_one(cart_doc)
     
-    return cart_doc
+    # Return a clean response without any MongoDB ObjectIds
+    response = {
+        "cart_id": cart_doc["cart_id"],
+        "user_id": cart_doc["user_id"],
+        "items": cart_doc["items"],
+        "updated_at": cart_doc["updated_at"]
+    }
+    
+    return response
 
 @api_router.delete("/cart")
 async def clear_cart(request: Request, session_token: Optional[str] = Cookie(None)):
