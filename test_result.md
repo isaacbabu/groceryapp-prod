@@ -107,75 +107,93 @@ user_problem_statement: "Grocery shopping app enhancements: Add sample items, ca
 backend:
   - task: "GET /api/items - Fetch all items"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Existing endpoint, testing with sample items"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Returns 22 items with correct structure (item_id, name, rate, category, image_url). No auth required."
 
   - task: "POST /api/seed-items - Seed sample grocery items"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "New endpoint to seed 22 sample items across 6 categories"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Successfully seeds 22 items across 6 categories (Vegetables, Fruits, Dairy, Beverages, Snacks, Essentials). Skips if items already exist. No auth required."
 
   - task: "GET /api/categories - Get distinct categories"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "New endpoint for category filtering"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Returns 6 distinct categories: ['Beverages', 'Dairy', 'Essentials', 'Fruits', 'Snacks', 'Vegetables']. No auth required."
 
   - task: "GET /api/cart - Load user cart"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "New endpoint to load persisted cart"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Returns user cart with items array (empty if no cart). Requires auth. Returns cart_id, user_id, items, updated_at."
 
   - task: "PUT /api/cart - Save/update cart"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "New endpoint to persist cart items"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Successfully saves/updates cart items. Requires auth. Fixed ObjectId serialization issue during testing. Accepts items array with item_id, item_name, rate, quantity, total."
 
   - task: "DELETE /api/cart - Clear cart"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "New endpoint to clear cart after order"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Successfully clears user cart. Requires auth. Returns confirmation message."
 
 frontend:
   - task: "Category filtering in item selection modal"
