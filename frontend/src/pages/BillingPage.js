@@ -39,7 +39,7 @@ const BillingPage = ({ user: initialUser }) => {
         setItems(newResponse.data);
       }
     } catch (error) {
-      toast.error('Failed to load items');
+      console.error('Failed to load items:', error);
     }
   };
 
