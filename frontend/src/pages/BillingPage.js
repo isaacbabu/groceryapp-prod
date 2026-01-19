@@ -46,7 +46,7 @@ const BillingPage = ({ user: initialUser }) => {
   const fetchCategories = async () => {
     try {
       const response = await axiosInstance.get('/categories');
-      setCategories(['All', ...response.data]);
+      setCategories(response.data);
     } catch (error) {
       console.error('Failed to load categories');
     }
