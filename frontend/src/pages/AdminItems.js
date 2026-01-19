@@ -156,7 +156,7 @@ const AdminItems = ({ user }) => {
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingItem(null);
-    setFormData({ name: '', rate: '', image_url: '', category: 'Vegetables' });
+    setFormData({ name: '', rate: '', image_url: '', category: categories[0] || '' });
   };
 
   if (loading) {
