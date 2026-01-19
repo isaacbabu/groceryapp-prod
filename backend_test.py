@@ -69,6 +69,34 @@ class GroceryBillingAPITester:
             print(f"❌ Failed - Error: {str(e)}")
             return False, {}
 
+    def create_mock_session(self):
+        """Create a mock session for testing"""
+        print("\n" + "="*50)
+        print("CREATING MOCK SESSION FOR TESTING")
+        print("="*50)
+        
+        # Try to create a session using a mock session_id
+        session_data = {
+            "session_id": "mock_session_12345"
+        }
+        
+        success, session_response = self.run_test(
+            "Create Mock Session (/api/auth/session)",
+            "POST",
+            "auth/session",
+            200,
+            data=session_data,
+            token=None
+        )
+        
+        if success and session_response:
+            self.user_token = session_response.get("session_token")
+            print(f"   Created session token: {self.user_token}")
+            return True
+        else:
+            print("   ❌ Failed to create mock session, will test without authentication")
+            return False
+
     def test_auth_endpoints(self):
         """Test authentication endpoints"""
         print("\n" + "="*50)
