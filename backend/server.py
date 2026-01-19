@@ -462,12 +462,6 @@ async def seed_sample_items():
         {"name": "Cumin Seeds (100g)", "rate": 70.00, "category": "Spices", "image_url": "https://images.unsplash.com/photo-1599909533702-a30f5c7c1b3d?w=400"},
         {"name": "Garam Masala (100g)", "rate": 95.00, "category": "Spices", "image_url": "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
         {"name": "Black Pepper (100g)", "rate": 120.00, "category": "Spices", "image_url": "https://images.unsplash.com/photo-1599909533701-236f4c33a640?w=400"},
-        # Household
-        {"name": "Dish Wash Liquid (500ml)", "rate": 120.00, "category": "Household", "image_url": "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400"},
-        {"name": "Floor Cleaner (1L)", "rate": 150.00, "category": "Household", "image_url": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400"},
-        {"name": "Laundry Detergent (1kg)", "rate": 250.00, "category": "Household", "image_url": "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=400"},
-        {"name": "Toilet Cleaner (500ml)", "rate": 90.00, "category": "Household", "image_url": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400"},
-        {"name": "Hand Wash (250ml)", "rate": 80.00, "category": "Household", "image_url": "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400"},
     ]
     
     for item in sample_items:
@@ -482,7 +476,7 @@ async def seed_sample_items():
         await db.items.insert_one(item_doc)
     
     # Seed default categories
-    default_categories = ["Pulses", "Rice", "Spices", "Household"]
+    default_categories = ["Pulses", "Rice", "Spices"]
     for cat in default_categories:
         existing = await db.categories.find_one({"name": cat})
         if not existing:
