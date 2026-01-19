@@ -616,6 +616,36 @@ async def get_user_orders(request: Request, session_token: Optional[str] = Cooki
     
     return orders
 
+@api_router.put("/orders/{order_id}", response_model=Order)
+async def update_order(order_id: str, order_update: OrderCreate, request: Request, session_token: Optional[str] = Cookie(None)):
+    user = await get_current_user(request, session_token)
+    
+    existing_order = await db.orders.find_one({"order_id": order_id}, {"_id": 0})
+    if not existing_order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if existing_order['user_id'] != user.user_id and not user.is_admin:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    # Update the order with new items and grand total
+    update_data = {
+        "items": [item.model_dump() for item in order_update.items],
+        "grand_total": order_update.grand_total,
+        "status": "Pending",  # Reset status to pending when edited
+        "updated_at": datetime.now(timezone.utc)
+    }
+    
+    await db.orders.update_one(
+        {"order_id": order_id},
+        {"$set": update_data}
+    )
+    
+    updated_order = await db.orders.find_one({"order_id": order_id}, {"_id": 0})
+    if isinstance(updated_order['created_at'], str):
+        updated_order['created_at'] = datetime.fromisoformat(updated_order['created_at'])
+    
+    return Order(**updated_order)
+
 @api_router.delete("/orders/{order_id}")
 async def delete_order(order_id: str, request: Request, session_token: Optional[str] = Cookie(None)):
     user = await get_current_user(request, session_token)
