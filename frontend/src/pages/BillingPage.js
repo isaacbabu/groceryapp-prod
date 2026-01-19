@@ -588,7 +588,7 @@ const BillingPage = ({ user: initialUser }) => {
               disabled={savingProfile}
               className="flex-1 bg-emerald-900 hover:bg-emerald-950 text-white h-12 font-primary font-medium"
             >
-              {savingProfile ? 'Processing...' : 'Save & Place Order'}
+              {savingProfile ? 'Processing...' : (editMode ? 'Save & Update Order' : 'Save & Place Order')}
             </Button>
           </DialogFooter>
         </DialogContent>
