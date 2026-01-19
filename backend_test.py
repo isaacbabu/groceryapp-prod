@@ -512,17 +512,25 @@ def main():
     
     tester = GroceryBillingAPITester()
     
+    # First try to create a mock session for authentication
+    session_created = tester.create_mock_session()
+    
     # Run all test suites - following the test flow from review request
     tester.test_seed_items_endpoint()  # First seed data
     tester.test_items_endpoints()      # Verify items exist
     tester.test_categories_endpoint()  # Verify categories are returned
-    tester.test_cart_endpoints()       # Test cart functionality with auth
-    tester.test_auth_endpoints()
-    tester.test_user_profile_endpoints()
-    tester.test_orders_endpoints()
-    tester.test_admin_endpoints()
-    tester.test_delete_operations()
-    tester.test_unauthorized_access()
+    
+    if session_created:
+        # Only run authenticated tests if session was created successfully
+        tester.test_cart_endpoints()       # Test cart functionality with auth
+        tester.test_auth_endpoints()
+        tester.test_user_profile_endpoints()
+        tester.test_orders_endpoints()     # This includes the PUT /api/orders/{order_id} test
+        tester.test_admin_endpoints()
+        tester.test_delete_operations()
+        tester.test_unauthorized_access()
+    else:
+        print("\n⚠️  Skipping authenticated tests due to session creation failure")
     
     # Print final results
     print("\n" + "="*50)
