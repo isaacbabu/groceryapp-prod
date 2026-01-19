@@ -5,8 +5,10 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import re
+import html
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator, model_validator
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone, timedelta
@@ -15,14 +17,43 @@ import requests
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
+client = AsyncIOMotorClient(mongo_url, maxPoolSize=50, minPoolSize=10)
 db = client[os.environ['DB_NAME']]
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
-# Models
+# Constants for validation
+MAX_STRING_LENGTH = 500
+MAX_ADDRESS_LENGTH = 1000
+MAX_ITEMS_PER_ORDER = 100
+MAX_ITEMS_PER_CART = 100
+MAX_QUANTITY = 10000
+MAX_RATE = 1000000
+MIN_RATE = 0.01
+PHONE_REGEX = re.compile(r'^[\d\s\-\+\(\)]{7,20}$')
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+
+def sanitize_string(value: str, max_length: int = MAX_STRING_LENGTH) -> str:
+    """Sanitize string input - escape HTML and limit length"""
+    if value is None:
+        return None
+    # Strip whitespace, escape HTML entities, limit length
+    sanitized = html.escape(str(value).strip())[:max_length]
+    return sanitized
+
+def validate_phone(phone: str) -> bool:
+    """Validate phone number format"""
+    if not phone:
+        return True
+    return bool(PHONE_REGEX.match(phone))
+
+# Models with validation
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
     user_id: str
@@ -35,8 +66,21 @@ class User(BaseModel):
     created_at: datetime
 
 class UserProfileUpdate(BaseModel):
-    phone_number: str
-    home_address: str
+    phone_number: str = Field(..., min_length=7, max_length=20)
+    home_address: str = Field(..., min_length=5, max_length=MAX_ADDRESS_LENGTH)
+    
+    @field_validator('phone_number')
+    @classmethod
+    def validate_phone_number(cls, v):
+        v = sanitize_string(v, 20)
+        if not validate_phone(v):
+            raise ValueError('Invalid phone number format')
+        return v
+    
+    @field_validator('home_address')
+    @classmethod
+    def validate_address(cls, v):
+        return sanitize_string(v, MAX_ADDRESS_LENGTH)
 
 class Item(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -48,17 +92,44 @@ class Item(BaseModel):
     created_at: datetime
 
 class ItemCreate(BaseModel):
-    name: str
-    rate: float
-    image_url: str
-    category: str
+    name: str = Field(..., min_length=1, max_length=200)
+    rate: float = Field(..., gt=0, le=MAX_RATE)
+    image_url: str = Field(..., min_length=1, max_length=2000)
+    category: str = Field(..., min_length=1, max_length=100)
+    
+    @field_validator('name', 'category')
+    @classmethod
+    def sanitize_text(cls, v):
+        return sanitize_string(v, 200)
+    
+    @field_validator('image_url')
+    @classmethod
+    def validate_image_url(cls, v):
+        v = str(v).strip()[:2000]
+        # Allow data URLs (base64) and http/https URLs
+        if not (v.startswith('http://') or v.startswith('https://') or v.startswith('data:image/')):
+            raise ValueError('Invalid image URL format')
+        return v
 
 class OrderItem(BaseModel):
-    item_id: str
-    item_name: str
-    rate: float
-    quantity: int
-    total: float
+    item_id: str = Field(..., min_length=1, max_length=50)
+    item_name: str = Field(..., min_length=1, max_length=200)
+    rate: float = Field(..., ge=0, le=MAX_RATE)
+    quantity: float = Field(..., gt=0, le=MAX_QUANTITY)
+    total: float = Field(..., ge=0)
+    
+    @field_validator('item_name')
+    @classmethod
+    def sanitize_item_name(cls, v):
+        return sanitize_string(v, 200)
+    
+    @model_validator(mode='after')
+    def validate_total(self):
+        expected_total = round(self.rate * self.quantity, 2)
+        if abs(self.total - expected_total) > 0.01:
+            # Auto-correct the total instead of rejecting
+            self.total = expected_total
+        return self
 
 class Order(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -74,15 +145,28 @@ class Order(BaseModel):
     created_at: datetime
 
 class OrderCreate(BaseModel):
-    items: List[OrderItem]
-    grand_total: float
+    items: List[OrderItem] = Field(..., min_length=1, max_length=MAX_ITEMS_PER_ORDER)
+    grand_total: float = Field(..., ge=0)
+    
+    @model_validator(mode='after')
+    def validate_grand_total(self):
+        expected_total = round(sum(item.total for item in self.items), 2)
+        if abs(self.grand_total - expected_total) > 0.01:
+            # Auto-correct the grand total
+            self.grand_total = expected_total
+        return self
 
 class CartItem(BaseModel):
-    item_id: str
-    item_name: str
-    rate: float
-    quantity: float
-    total: float
+    item_id: str = Field(..., min_length=1, max_length=50)
+    item_name: str = Field(..., min_length=1, max_length=200)
+    rate: float = Field(..., ge=0, le=MAX_RATE)
+    quantity: float = Field(..., gt=0, le=MAX_QUANTITY)
+    total: float = Field(..., ge=0)
+    
+    @field_validator('item_name')
+    @classmethod
+    def sanitize_item_name(cls, v):
+        return sanitize_string(v, 200)
 
 class Cart(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -92,7 +176,7 @@ class Cart(BaseModel):
     updated_at: datetime
 
 class CartUpdate(BaseModel):
-    items: List[CartItem]
+    items: List[CartItem] = Field(..., max_length=MAX_ITEMS_PER_CART)
 
 # Helper function to get user from cookie or header
 async def get_current_user(request: Request, session_token: Optional[str] = Cookie(None)) -> User:
