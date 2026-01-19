@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Grocery shopping app enhancements: Add sample items, category filtering in item selection modal, persist cart to backend, address requirement modal for new users"
+user_problem_statement: "Grocery shopping app enhancements: Updated categories to Pulses, Rice, Spices, Household. Added admin ability to add custom categories."
 
 backend:
   - task: "GET /api/items - Fetch all items"
