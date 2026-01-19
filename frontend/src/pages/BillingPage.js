@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { axiosInstance } from '@/App';
 import { Menu, Plus, Trash2, Search, LogOut, User, ShoppingBag, Info, LayoutDashboard, Phone, MapPin, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 
 const BillingPage = ({ user: initialUser }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState(initialUser);
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -21,6 +22,10 @@ const BillingPage = ({ user: initialUser }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [grandTotal, setGrandTotal] = useState(0);
   const [cartLoaded, setCartLoaded] = useState(false);
+  
+  // Edit mode state
+  const [editMode, setEditMode] = useState(false);
+  const [editOrderId, setEditOrderId] = useState(null);
   
   // Address modal state
   const [phoneNumber, setPhoneNumber] = useState('');
