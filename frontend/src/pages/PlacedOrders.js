@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '@/App';
-import { ArrowLeft, Trash2, Package } from 'lucide-react';
+import { ArrowLeft, Trash2, Package, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import {
