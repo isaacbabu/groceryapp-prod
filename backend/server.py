@@ -360,34 +360,30 @@ async def seed_sample_items():
         return {"message": f"Items already exist ({existing_count} items). Skipping seed."}
     
     sample_items = [
-        # Vegetables
-        {"name": "Fresh Tomatoes", "rate": 40.00, "category": "Vegetables", "image_url": "https://images.unsplash.com/photo-1546470427-227c7369a9b0?w=400"},
-        {"name": "Onions", "rate": 35.00, "category": "Vegetables", "image_url": "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=400"},
-        {"name": "Potatoes", "rate": 30.00, "category": "Vegetables", "image_url": "https://images.unsplash.com/photo-1518977676601-b53f82ber?w=400"},
-        {"name": "Carrots", "rate": 45.00, "category": "Vegetables", "image_url": "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400"},
-        # Fruits
-        {"name": "Bananas", "rate": 50.00, "category": "Fruits", "image_url": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400"},
-        {"name": "Apples", "rate": 180.00, "category": "Fruits", "image_url": "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400"},
-        {"name": "Oranges", "rate": 80.00, "category": "Fruits", "image_url": "https://images.unsplash.com/photo-1547514701-42782101795e?w=400"},
-        {"name": "Grapes", "rate": 120.00, "category": "Fruits", "image_url": "https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=400"},
-        # Dairy
-        {"name": "Fresh Milk (1L)", "rate": 60.00, "category": "Dairy", "image_url": "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400"},
-        {"name": "Butter (500g)", "rate": 250.00, "category": "Dairy", "image_url": "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=400"},
-        {"name": "Cheese Slices", "rate": 150.00, "category": "Dairy", "image_url": "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400"},
-        {"name": "Yogurt (400g)", "rate": 45.00, "category": "Dairy", "image_url": "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400"},
-        # Beverages
-        {"name": "Orange Juice (1L)", "rate": 120.00, "category": "Beverages", "image_url": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400"},
-        {"name": "Green Tea (25 bags)", "rate": 180.00, "category": "Beverages", "image_url": "https://images.unsplash.com/photo-1556881286-fc6915169721?w=400"},
-        {"name": "Coffee Powder (200g)", "rate": 350.00, "category": "Beverages", "image_url": "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400"},
-        # Snacks
-        {"name": "Potato Chips", "rate": 30.00, "category": "Snacks", "image_url": "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400"},
-        {"name": "Mixed Nuts (250g)", "rate": 280.00, "category": "Snacks", "image_url": "https://images.unsplash.com/photo-1536591375352-6037fd3f5c66?w=400"},
-        {"name": "Chocolate Bar", "rate": 50.00, "category": "Snacks", "image_url": "https://images.unsplash.com/photo-1511381939415-e44015466834?w=400"},
-        # Essentials
-        {"name": "Rice (5kg)", "rate": 350.00, "category": "Essentials", "image_url": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"},
-        {"name": "Cooking Oil (1L)", "rate": 180.00, "category": "Essentials", "image_url": "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
-        {"name": "Salt (1kg)", "rate": 25.00, "category": "Essentials", "image_url": "https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=400"},
-        {"name": "Sugar (1kg)", "rate": 45.00, "category": "Essentials", "image_url": "https://images.unsplash.com/photo-1581268955317-b68b6f23ef26?w=400"},
+        # Pulses
+        {"name": "Toor Dal (1kg)", "rate": 150.00, "category": "Pulses", "image_url": "https://images.unsplash.com/photo-1585996340258-c90e51a42c15?w=400"},
+        {"name": "Moong Dal (1kg)", "rate": 140.00, "category": "Pulses", "image_url": "https://images.unsplash.com/photo-1612257416648-ee7a6c533bc4?w=400"},
+        {"name": "Chana Dal (1kg)", "rate": 120.00, "category": "Pulses", "image_url": "https://images.unsplash.com/photo-1593001872095-7d5b3868fb1d?w=400"},
+        {"name": "Urad Dal (1kg)", "rate": 160.00, "category": "Pulses", "image_url": "https://images.unsplash.com/photo-1558818498-28c1e002674f?w=400"},
+        {"name": "Masoor Dal (1kg)", "rate": 130.00, "category": "Pulses", "image_url": "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+        # Rice
+        {"name": "Basmati Rice (5kg)", "rate": 450.00, "category": "Rice", "image_url": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"},
+        {"name": "Brown Rice (2kg)", "rate": 180.00, "category": "Rice", "image_url": "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=400"},
+        {"name": "Sona Masoori Rice (5kg)", "rate": 380.00, "category": "Rice", "image_url": "https://images.unsplash.com/photo-1516684732162-798a0062be99?w=400"},
+        {"name": "Jeera Rice (1kg)", "rate": 120.00, "category": "Rice", "image_url": "https://images.unsplash.com/photo-1596560548464-f010549b84d7?w=400"},
+        # Spices
+        {"name": "Turmeric Powder (200g)", "rate": 80.00, "category": "Spices", "image_url": "https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=400"},
+        {"name": "Red Chilli Powder (200g)", "rate": 90.00, "category": "Spices", "image_url": "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+        {"name": "Coriander Powder (200g)", "rate": 60.00, "category": "Spices", "image_url": "https://images.unsplash.com/photo-1599909533681-74f257a5096d?w=400"},
+        {"name": "Cumin Seeds (100g)", "rate": 70.00, "category": "Spices", "image_url": "https://images.unsplash.com/photo-1599909533702-a30f5c7c1b3d?w=400"},
+        {"name": "Garam Masala (100g)", "rate": 95.00, "category": "Spices", "image_url": "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+        {"name": "Black Pepper (100g)", "rate": 120.00, "category": "Spices", "image_url": "https://images.unsplash.com/photo-1599909533701-236f4c33a640?w=400"},
+        # Household
+        {"name": "Dish Wash Liquid (500ml)", "rate": 120.00, "category": "Household", "image_url": "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400"},
+        {"name": "Floor Cleaner (1L)", "rate": 150.00, "category": "Household", "image_url": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400"},
+        {"name": "Laundry Detergent (1kg)", "rate": 250.00, "category": "Household", "image_url": "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=400"},
+        {"name": "Toilet Cleaner (500ml)", "rate": 90.00, "category": "Household", "image_url": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=400"},
+        {"name": "Hand Wash (250ml)", "rate": 80.00, "category": "Household", "image_url": "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400"},
     ]
     
     for item in sample_items:
@@ -401,13 +397,97 @@ async def seed_sample_items():
         }
         await db.items.insert_one(item_doc)
     
-    return {"message": f"Successfully seeded {len(sample_items)} items"}
+    # Seed default categories
+    default_categories = ["Pulses", "Rice", "Spices", "Household"]
+    for cat in default_categories:
+        existing = await db.categories.find_one({"name": cat})
+        if not existing:
+            await db.categories.insert_one({
+                "category_id": f"cat_{uuid.uuid4().hex[:12]}",
+                "name": cat,
+                "is_default": True,
+                "created_at": datetime.now(timezone.utc)
+            })
+    
+    return {"message": f"Successfully seeded {len(sample_items)} items and {len(default_categories)} categories"}
 
 # Get categories endpoint
 @api_router.get("/categories")
 async def get_categories():
-    categories = await db.items.distinct("category")
+    # Get categories from the categories collection (both default and custom)
+    categories_cursor = db.categories.find({}, {"_id": 0, "name": 1}).sort("name", 1)
+    categories_list = await categories_cursor.to_list(1000)
+    categories = [cat["name"] for cat in categories_list]
+    
+    # If no categories in collection, get from items (fallback)
+    if not categories:
+        categories = await db.items.distinct("category")
+    
+    # Always include "All" at the beginning
+    return ["All"] + sorted(categories)
+
+# Category model for admin
+class CategoryCreate(BaseModel):
+    name: str
+
+class Category(BaseModel):
+    category_id: str
+    name: str
+    is_default: bool = False
+    created_at: datetime
+
+# Admin category management endpoints
+@api_router.get("/admin/categories")
+async def get_admin_categories(request: Request, session_token: Optional[str] = Cookie(None)):
+    user = await get_current_user(request, session_token)
+    if not user.is_admin:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    categories = await db.categories.find({}, {"_id": 0}).sort("name", 1).to_list(1000)
     return categories
+
+@api_router.post("/admin/categories")
+async def create_category(category: CategoryCreate, request: Request, session_token: Optional[str] = Cookie(None)):
+    user = await get_current_user(request, session_token)
+    if not user.is_admin:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Check if category already exists
+    existing = await db.categories.find_one({"name": {"$regex": f"^{category.name}$", "$options": "i"}})
+    if existing:
+        raise HTTPException(status_code=400, detail="Category already exists")
+    
+    category_doc = {
+        "category_id": f"cat_{uuid.uuid4().hex[:12]}",
+        "name": category.name,
+        "is_default": False,
+        "created_at": datetime.now(timezone.utc)
+    }
+    await db.categories.insert_one(category_doc)
+    return {"category_id": category_doc["category_id"], "name": category.name, "is_default": False, "created_at": category_doc["created_at"]}
+
+@api_router.delete("/admin/categories/{category_id}")
+async def delete_category(category_id: str, request: Request, session_token: Optional[str] = Cookie(None)):
+    user = await get_current_user(request, session_token)
+    if not user.is_admin:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Find the category
+    category = await db.categories.find_one({"category_id": category_id})
+    if not category:
+        raise HTTPException(status_code=404, detail="Category not found")
+    
+    # Don't allow deletion of default categories
+    if category.get("is_default", False):
+        raise HTTPException(status_code=400, detail="Cannot delete default categories")
+    
+    # Check if any items use this category
+    items_count = await db.items.count_documents({"category": category["name"]})
+    if items_count > 0:
+        raise HTTPException(status_code=400, detail=f"Cannot delete category. {items_count} items are using this category.")
+    
+    await db.categories.delete_one({"category_id": category_id})
+    return {"message": "Category deleted successfully"}
 
 # Orders endpoints
 @api_router.post("/orders", response_model=Order)
