@@ -122,15 +122,18 @@ backend:
 
   - task: "PUT /api/orders/{order_id} - Update existing order"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "New endpoint to update existing orders. Accepts items array and grand_total. Resets status to Pending."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - PUT /api/orders/{order_id} endpoint working perfectly! Successfully tested full flow: 1) Created initial order with 1 item (total: 300.0), 2) Updated order with 2 items (total: 570.0), 3) Verified status reset to 'Pending', 4) Confirmed update persisted in database. Authentication required and working correctly."
 
   - task: "POST /api/seed-items - Seed sample grocery items"
     implemented: true
