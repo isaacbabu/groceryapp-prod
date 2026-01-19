@@ -16,7 +16,7 @@ const BillingPage = ({ user: initialUser }) => {
   const [user, setUser] = useState(initialUser);
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('Rice');
   const [billingRows, setBillingRows] = useState([]);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
