@@ -445,18 +445,24 @@ const BillingPage = ({ user: initialUser }) => {
                         </button>
                         <Input
                           data-testid={`qty-input-${index}`}
-                          type="number"
-                          min="0"
-                          step="0.1"
+                          type="text"
+                          inputMode="decimal"
                           value={row.quantity}
                           onChange={(e) => updateQuantity(row.id, e.target.value)}
                           onFocus={(e) => {
-                            const val = e.target.value;
-                            e.target.value = '';
-                            e.target.value = val;
+                            const len = e.target.value.length;
+                            e.target.setSelectionRange(len, len);
+                          }}
+                          onClick={(e) => {
+                            const len = e.target.value.length;
+                            e.target.setSelectionRange(len, len);
+                          }}
+                          onKeyUp={(e) => {
+                            const len = e.target.value.length;
+                            e.target.setSelectionRange(len, len);
                           }}
                           placeholder="1"
-                          className="h-8 w-16 bg-transparent border border-zinc-200 rounded-md pl-6 pr-2 py-1 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="h-8 w-16 bg-transparent border border-zinc-200 rounded-md pl-6 pr-2 py-1 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono text-right"
                         />
                       </div>
                     </td>
