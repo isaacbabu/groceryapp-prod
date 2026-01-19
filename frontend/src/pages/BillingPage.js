@@ -109,6 +109,32 @@ const BillingPage = ({ user: initialUser }) => {
     loadCart();
   }, []);
 
+  // Check for edit order from navigation state
+  useEffect(() => {
+    if (location.state?.editOrder) {
+      const { order_id, items: orderItems } = location.state.editOrder;
+      setEditMode(true);
+      setEditOrderId(order_id);
+      
+      // Load order items into billing rows
+      const editRows = orderItems.map((item, index) => ({
+        id: Date.now() + index,
+        item_id: item.item_id,
+        item_name: item.item_name,
+        rate: item.rate,
+        quantity: item.quantity,
+        total: item.total,
+      }));
+      setBillingRows(editRows);
+      setCartLoaded(true); // Mark as loaded to prevent cart override
+      
+      toast.info(`Editing order ${order_id.slice(-8)}...`);
+      
+      // Clear the navigation state to prevent reloading on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
   // Save cart whenever billingRows changes (after initial load)
   useEffect(() => {
     if (cartLoaded && billingRows.length >= 0) {
