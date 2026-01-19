@@ -22,6 +22,7 @@ import {
 const AdminItems = ({ user }) => {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -31,7 +32,7 @@ const AdminItems = ({ user }) => {
     name: '',
     rate: '',
     image_url: '',
-    category: 'Vegetables'
+    category: ''
   });
   const [uploadingImage, setUploadingImage] = useState(false);
 
@@ -42,7 +43,23 @@ const AdminItems = ({ user }) => {
       return;
     }
     fetchItems();
+    fetchCategories();
   }, [user, navigate]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get('/categories');
+      // Filter out "All" from categories for item creation
+      const cats = response.data.filter(cat => cat !== 'All');
+      setCategories(cats);
+      // Set default category if not set
+      if (!formData.category && cats.length > 0) {
+        setFormData(prev => ({ ...prev, category: cats[0] }));
+      }
+    } catch (error) {
+      console.error('Failed to load categories');
+    }
+  };
 
   const fetchItems = async () => {
     try {
