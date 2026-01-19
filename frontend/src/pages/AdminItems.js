@@ -310,16 +310,12 @@ const AdminItems = ({ user }) => {
               </Label>
               <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
                 <SelectTrigger data-testid="item-category-select">
-                  <SelectValue />
+                  <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Vegetables">Vegetables</SelectItem>
-                  <SelectItem value="Fruits">Fruits</SelectItem>
-                  <SelectItem value="Dairy">Dairy</SelectItem>
-                  <SelectItem value="Grains">Grains</SelectItem>
-                  <SelectItem value="Beverages">Beverages</SelectItem>
-                  <SelectItem value="Snacks">Snacks</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
