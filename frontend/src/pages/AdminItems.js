@@ -110,6 +110,12 @@ const AdminItems = ({ user }) => {
   const handleSubmit = async () => {
     if (!formData.name || !formData.rate || !formData.image_url || !formData.category) {
       toast.error('All fields are required');
+      console.error('Missing fields:', { 
+        name: !!formData.name, 
+        rate: !!formData.rate, 
+        image_url: !!formData.image_url, 
+        category: !!formData.category 
+      });
       return;
     }
 
@@ -120,6 +126,8 @@ const AdminItems = ({ user }) => {
       image_url: formData.image_url,
       category: formData.category
     };
+
+    console.log('Submitting item payload:', payload);
 
     try {
       if (editingItem) {
@@ -135,6 +143,7 @@ const AdminItems = ({ user }) => {
       setFormData({ name: '', rate: '', image_url: '', category: categories[0] || '' });
       fetchItems();
     } catch (error) {
+      console.error('Failed to add/update item:', error.response?.data || error.message);
       toast.error(editingItem ? 'Failed to update item' : 'Failed to add item');
     }
   };
