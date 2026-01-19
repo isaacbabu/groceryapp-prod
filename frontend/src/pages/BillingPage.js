@@ -441,7 +441,7 @@ const BillingPage = ({ user: initialUser }) => {
                           onClick={() => updateQuantity(row.id, String((parseFloat(row.quantity) || 0) + 1))}
                           className="absolute left-1 top-1/2 -translate-y-1/2 h-5 w-5 flex items-center justify-center text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded transition-colors"
                         >
-                          <Plus className="h-3 w-3" />
+                          <ChevronUp className="h-4 w-4" />
                         </button>
                         <Input
                           data-testid={`qty-input-${index}`}
