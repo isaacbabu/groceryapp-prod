@@ -108,17 +108,25 @@ const AdminItems = ({ user }) => {
   };
 
   const handleSubmit = async () => {
-    if (!formData.name || !formData.rate || !formData.image_url) {
+    if (!formData.name || !formData.rate || !formData.image_url || !formData.category) {
       toast.error('All fields are required');
       return;
     }
 
+    // Prepare payload with proper types
+    const payload = {
+      name: formData.name,
+      rate: parseFloat(formData.rate),
+      image_url: formData.image_url,
+      category: formData.category
+    };
+
     try {
       if (editingItem) {
-        await axiosInstance.put(`/admin/items/${editingItem.item_id}`, formData);
+        await axiosInstance.put(`/admin/items/${editingItem.item_id}`, payload);
         toast.success('Item updated successfully');
       } else {
-        await axiosInstance.post('/admin/items', formData);
+        await axiosInstance.post('/admin/items', payload);
         toast.success('Item added successfully');
       }
       
