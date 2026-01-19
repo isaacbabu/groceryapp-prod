@@ -267,16 +267,28 @@ const BillingPage = ({ user: initialUser }) => {
     }
 
     try {
-      await axiosInstance.post('/orders', {
-        items: billingRows,
-        grand_total: grandTotal,
-      });
-      toast.success('Order placed successfully!');
+      if (editMode && editOrderId) {
+        // Update existing order
+        await axiosInstance.put(`/orders/${editOrderId}`, {
+          items: billingRows,
+          grand_total: grandTotal,
+        });
+        toast.success('Order updated successfully!');
+        setEditMode(false);
+        setEditOrderId(null);
+      } else {
+        // Create new order
+        await axiosInstance.post('/orders', {
+          items: billingRows,
+          grand_total: grandTotal,
+        });
+        toast.success('Order placed successfully!');
+      }
       setBillingRows([]);
       setGrandTotal(0);
       await clearCart();
     } catch (error) {
-      toast.error('Failed to place order');
+      toast.error(editMode ? 'Failed to update order' : 'Failed to place order');
     }
   };
 
