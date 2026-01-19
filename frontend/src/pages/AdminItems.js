@@ -124,7 +124,7 @@ const AdminItems = ({ user }) => {
       
       setShowModal(false);
       setEditingItem(null);
-      setFormData({ name: '', rate: '', image_url: '', category: 'Vegetables' });
+      setFormData({ name: '', rate: '', image_url: '', category: categories[0] || '' });
       fetchItems();
     } catch (error) {
       toast.error(editingItem ? 'Failed to update item' : 'Failed to add item');
