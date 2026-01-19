@@ -545,8 +545,9 @@ async def create_category(category: CategoryCreate, request: Request, session_to
     if not user.is_admin:
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    # Check if category already exists
-    existing = await db.categories.find_one({"name": {"$regex": f"^{category.name}$", "$options": "i"}})
+    # Check if category already exists (case-insensitive, escape regex special chars)
+    escaped_name = re.escape(category.name)
+    existing = await db.categories.find_one({"name": {"$regex": f"^{escaped_name}$", "$options": "i"}})
     if existing:
         raise HTTPException(status_code=400, detail="Category already exists")
     
