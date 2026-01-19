@@ -512,7 +512,16 @@ async def get_categories():
 
 # Category model for admin
 class CategoryCreate(BaseModel):
-    name: str
+    name: str = Field(..., min_length=1, max_length=100)
+    
+    @field_validator('name')
+    @classmethod
+    def sanitize_name(cls, v):
+        sanitized = sanitize_string(v, 100)
+        # Only allow alphanumeric, spaces, and common punctuation
+        if not re.match(r'^[\w\s\-&]+$', sanitized):
+            raise ValueError('Category name contains invalid characters')
+        return sanitized
 
 class Category(BaseModel):
     category_id: str
