@@ -120,6 +120,18 @@ backend:
         agent: "testing"
         comment: "✅ PASSED - Returns 22 items with correct structure (item_id, name, rate, category, image_url). No auth required."
 
+  - task: "PUT /api/orders/{order_id} - Update existing order"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "New endpoint to update existing orders. Accepts items array and grand_total. Resets status to Pending."
+
   - task: "POST /api/seed-items - Seed sample grocery items"
     implemented: true
     working: true
