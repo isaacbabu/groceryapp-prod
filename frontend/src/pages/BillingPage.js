@@ -374,7 +374,10 @@ const BillingPage = ({ user: initialUser }) => {
 
       {/* Item Selection Modal */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="bg-white border-none shadow-2xl sm:max-w-[800px] p-0 overflow-hidden rounded-2xl">
+        <DialogContent 
+          className="bg-white border-none shadow-2xl sm:max-w-[800px] p-0 overflow-hidden rounded-2xl"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
           <DialogHeader className="p-6 border-b border-zinc-100 bg-zinc-50/50">
             <DialogTitle className="text-2xl font-bold font-primary text-emerald-950">Select Item</DialogTitle>
           </DialogHeader>
