@@ -306,10 +306,56 @@ class GroceryBillingAPITester:
             if success and order_response:
                 self.test_order_id = order_response.get("order_id")
                 print(f"   Created order ID: {self.test_order_id}")
+                print(f"   Original status: {order_response.get('status')}")
+                print(f"   Original grand total: {order_response.get('grand_total')}")
+                
+                # Test PUT /api/orders/{order_id} - Update existing order
+                if len(items_data) > 1:
+                    # Use different items for update
+                    second_item = items_data[1]
+                    updated_order_data = {
+                        "items": [
+                            {
+                                "item_id": sample_item["item_id"],
+                                "item_name": sample_item["name"],
+                                "rate": sample_item["rate"],
+                                "quantity": 1,  # Changed quantity
+                                "total": sample_item["rate"] * 1
+                            },
+                            {
+                                "item_id": second_item["item_id"],
+                                "item_name": second_item["name"],
+                                "rate": second_item["rate"],
+                                "quantity": 3,  # Added new item
+                                "total": second_item["rate"] * 3
+                            }
+                        ],
+                        "grand_total": (sample_item["rate"] * 1) + (second_item["rate"] * 3)
+                    }
+                    
+                    success, updated_order_response = self.run_test(
+                        f"Update Order (/api/orders/{self.test_order_id})",
+                        "PUT",
+                        f"orders/{self.test_order_id}",
+                        200,
+                        data=updated_order_data
+                    )
+                    
+                    if success and updated_order_response:
+                        print(f"   Updated order ID: {updated_order_response.get('order_id')}")
+                        print(f"   Updated status: {updated_order_response.get('status')}")
+                        print(f"   Updated grand total: {updated_order_response.get('grand_total')}")
+                        print(f"   Updated items count: {len(updated_order_response.get('items', []))}")
+                        
+                        # Verify status was reset to "Pending"
+                        if updated_order_response.get('status') == 'Pending':
+                            print("✅ Status correctly reset to 'Pending' after update")
+                        else:
+                            print(f"❌ Status not reset correctly. Expected 'Pending', got '{updated_order_response.get('status')}'")
         
-        # Test GET /api/orders
+        # Test GET /api/orders to verify the update persisted
         success, orders_data = self.run_test(
-            "Get User Orders (/api/orders)",
+            "Get User Orders After Update (/api/orders)",
             "GET",
             "orders",
             200
@@ -317,6 +363,13 @@ class GroceryBillingAPITester:
         
         if success and orders_data:
             print(f"   Found {len(orders_data)} orders for user")
+            if self.test_order_id and orders_data:
+                # Find our test order and verify it was updated
+                test_order = next((order for order in orders_data if order.get('order_id') == self.test_order_id), None)
+                if test_order:
+                    print(f"   Verified updated order - Status: {test_order.get('status')}, Items: {len(test_order.get('items', []))}")
+                else:
+                    print("   ❌ Could not find updated test order in orders list")
 
     def test_admin_endpoints(self):
         """Test admin endpoints"""
