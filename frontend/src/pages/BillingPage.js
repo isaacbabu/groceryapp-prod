@@ -174,9 +174,7 @@ const BillingPage = ({ user: initialUser }) => {
       total: item.rate * 1,
     };
     setBillingRows([...billingRows, newRow]);
-    setShowModal(false);
-    setSearchQuery('');
-    setSelectedCategory('All');
+    closeItemModal();
     toast.success(`${item.name} added to bill`);
   };
 
