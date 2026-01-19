@@ -372,9 +372,37 @@ const BillingPage = ({ user: initialUser }) => {
 
         {/* Table Container - Fixed height with scroll */}
         <div className="flex-1 overflow-auto p-3 md:p-8 pb-1">
+          {/* Edit Mode Banner */}
+          {editMode && (
+            <div className="mb-4 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-amber-100 rounded-full p-2">
+                  <Pencil className="h-5 w-5 text-amber-700" />
+                </div>
+                <div>
+                  <p className="font-primary font-bold text-amber-900">Editing Order</p>
+                  <p className="text-sm text-amber-700 font-secondary">Order ID: {editOrderId?.slice(-8)}</p>
+                </div>
+              </div>
+              <Button
+                data-testid="cancel-edit-btn"
+                onClick={() => {
+                  setEditMode(false);
+                  setEditOrderId(null);
+                  setBillingRows([]);
+                  setGrandTotal(0);
+                  toast.info('Edit cancelled');
+                }}
+                variant="outline"
+                className="text-amber-700 border-amber-300 hover:bg-amber-100 font-secondary"
+              >
+                <X className="mr-2 h-4 w-4" /> Cancel Edit
+              </Button>
+            </div>
+          )}
           <div className="mb-2">
-            <h2 className="text-base md:text-lg font-bold font-primary text-emerald-950 mb-1">Ordering</h2>
-            <p className="text-xs md:text-sm text-zinc-500 font-secondary">Create new order</p>
+            <h2 className="text-base md:text-lg font-bold font-primary text-emerald-950 mb-1">{editMode ? 'Edit Order' : 'Ordering'}</h2>
+            <p className="text-xs md:text-sm text-zinc-500 font-secondary">{editMode ? 'Modify your existing order' : 'Create new order'}</p>
           </div>
           <div className="w-full border border-zinc-200 rounded-xl overflow-hidden bg-white shadow-sm">
             <table className="w-full">
