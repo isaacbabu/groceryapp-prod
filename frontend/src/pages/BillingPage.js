@@ -436,6 +436,13 @@ const BillingPage = ({ user: initialUser }) => {
                     <td className="p-2 align-middle font-mono text-sm text-emerald-700">₹{row.rate.toFixed(2)}</td>
                     <td className="p-2 align-middle">
                       <div className="relative inline-flex items-center">
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(row.id, String(Math.max(0, (parseFloat(row.quantity) || 0) - 1)))}
+                          className="absolute left-1 top-1/2 -translate-y-1/2 h-5 w-5 flex items-center justify-center text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded transition-colors"
+                        >
+                          <Minus className="h-3 w-3" />
+                        </button>
                         <Input
                           data-testid={`qty-input-${index}`}
                           type="number"
@@ -444,7 +451,7 @@ const BillingPage = ({ user: initialUser }) => {
                           value={row.quantity}
                           onChange={(e) => updateQuantity(row.id, e.target.value)}
                           placeholder="1"
-                          className="h-8 w-16 bg-transparent border border-zinc-200 rounded-md pl-2 pr-6 py-1 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="h-8 w-16 bg-transparent border border-zinc-200 rounded-md px-6 py-1 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
                         <button
                           type="button"
