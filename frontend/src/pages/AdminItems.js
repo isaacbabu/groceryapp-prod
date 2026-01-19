@@ -224,7 +224,7 @@ const AdminItems = ({ user }) => {
             <h2 className="text-xl font-bold font-primary text-zinc-900 mb-2">No items yet</h2>
             <p className="text-zinc-500 font-secondary mb-4">Add your first item to get started</p>
             <Button
-              onClick={() => setShowModal(true)}
+              onClick={handleOpenAddModal}
               className="bg-emerald-900 hover:bg-emerald-950 font-secondary"
             >
               <Plus className="mr-2 h-4 w-4" /> Add Item
