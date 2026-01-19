@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { axiosInstance } from '@/App';
 import { Menu, Plus, Trash2, Search, LogOut, User, ShoppingBag, Info, LayoutDashboard, Phone, MapPin, X, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,16 +12,19 @@ import { toast } from 'sonner';
 const BillingPage = ({ user: initialUser }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [user, setUser] = useState(initialUser);
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [billingRows, setBillingRows] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [grandTotal, setGrandTotal] = useState(0);
   const [cartLoaded, setCartLoaded] = useState(false);
+  
+  // Modal state derived from URL
+  const showModal = searchParams.get('modal') === 'select-item';
   
   // Edit mode state
   const [editMode, setEditMode] = useState(false);
@@ -31,6 +34,17 @@ const BillingPage = ({ user: initialUser }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [homeAddress, setHomeAddress] = useState('');
   const [savingProfile, setSavingProfile] = useState(false);
+
+  // Functions to open/close modal via URL
+  const openItemModal = () => {
+    setSearchParams({ modal: 'select-item' });
+  };
+
+  const closeItemModal = () => {
+    setSearchParams({});
+    setSearchQuery('');
+    setSelectedCategory('All');
+  };
 
   const fetchItems = async () => {
     try {
