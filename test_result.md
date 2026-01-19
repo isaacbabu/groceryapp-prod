@@ -273,3 +273,5 @@ agent_communication:
     message: "Implemented all 4 features: sample items seeding, category filtering, cart persistence, and address requirement modal. Backend has new endpoints for cart (GET/PUT/DELETE), categories, and seed-items. Frontend BillingPage updated with category filters, cart auto-save, and address modal. Please test all backend endpoints."
   - agent: "testing"
     message: "✅ BACKEND TESTING COMPLETE - All 6 new endpoints working perfectly! Fixed ObjectId serialization bug in PUT /api/cart during testing. Created test session for auth testing. All endpoints tested with proper data flow: seed-items → items → categories → cart operations. Ready for frontend testing or final summary."
+  - agent: "main"
+    message: "Added Edit Order feature. New PUT /api/orders/{order_id} endpoint for updating orders. PlacedOrders.js has new Edit Order button. BillingPage.js handles edit mode with visual indicator. Please test the new PUT endpoint."
