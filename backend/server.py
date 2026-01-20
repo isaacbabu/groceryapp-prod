@@ -233,29 +233,35 @@ async def get_current_user(request: Request, session_token: Optional[str] = Cook
     return User(**user_doc)
 
 # Auth endpoints
-@api_router.post("/auth/session")
-async def create_session(request: Request, response: Response):
+@api_router.post("/auth/google")
+async def google_auth(request: Request, response: Response):
+    """Handle Google OAuth token verification"""
     body = await request.json()
-    session_id = body.get('session_id')
+    credential = body.get('credential')  # Google ID token
     
-    if not session_id:
-        raise HTTPException(status_code=400, detail="session_id required")
+    if not credential:
+        raise HTTPException(status_code=400, detail="credential required")
     
     try:
-        auth_response = requests.get(
-            'https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data',
-            headers={'X-Session-ID': session_id},
-            timeout=10
+        # Verify Google ID token
+        from google.oauth2 import id_token
+        from google.auth.transport import requests as google_requests
+        
+        GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+        
+        idinfo = id_token.verify_oauth2_token(
+            credential, 
+            google_requests.Request(), 
+            GOOGLE_CLIENT_ID
         )
-        auth_response.raise_for_status()
-        session_data = auth_response.json()
+        
+        user_email = idinfo['email']
+        user_name = idinfo.get('name', user_email.split('@')[0])
+        user_picture = idinfo.get('picture')
+        
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to get session data: {str(e)}")
-    
-    session_token = session_data['session_token']
-    user_email = session_data['email']
-    user_name = session_data['name']
-    user_picture = session_data.get('picture')
+        logger.error(f"Google auth error: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Invalid Google token: {str(e)}")
     
     existing_user = await db.users.find_one({"email": user_email}, {"_id": 0})
     
@@ -264,7 +270,6 @@ async def create_session(request: Request, response: Response):
     
     if existing_user:
         user_id = existing_user['user_id']
-        # Check if user should be admin
         is_admin = user_email in ADMIN_EMAILS
         await db.users.update_one(
             {"user_id": user_id},
@@ -283,6 +288,9 @@ async def create_session(request: Request, response: Response):
             "is_admin": is_admin,
             "created_at": datetime.now(timezone.utc)
         })
+    
+    # Create session token
+    session_token = uuid.uuid4().hex
     
     await db.user_sessions.insert_one({
         "user_id": user_id,

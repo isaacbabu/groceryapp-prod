@@ -1,15 +1,72 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-    const redirectUrl = window.location.origin + '/billing';
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+  useEffect(() => {
+    // Load Google Identity Services script
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      window.google.accounts.id.initialize({
+        client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+        callback: handleGoogleResponse,
+      });
+      
+      window.google.accounts.id.renderButton(
+        document.getElementById('google-signin-btn'),
+        { 
+          theme: 'outline', 
+          size: 'large',
+          width: '300',
+          text: 'signin_with'
+        }
+      );
+    };
+
+    return () => {
+      const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+      if (existingScript) {
+        document.body.removeChild(existingScript);
+      }
+    };
+  }, []);
+
+  const handleGoogleResponse = async (response) => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const res = await fetch(`${backendUrl}/api/auth/google`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ credential: response.credential }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Authentication failed');
+      }
+
+      const data = await res.json();
+      
+      // Store session token in localStorage as backup
+      if (data.session_token) {
+        localStorage.setItem('session_token', data.session_token);
+      }
+
+      // Navigate to home page
+      navigate('/', { state: { user: data.user }, replace: true });
+    } catch (error) {
+      console.error('Auth error:', error);
+      alert('Authentication failed. Please try again.');
+    }
   };
 
   return (
@@ -40,13 +97,8 @@ const LoginPage = () => {
             </p>
           </div>
           
-          <Button
-            data-testid="google-signin-btn"
-            onClick={handleLogin}
-            className="w-full bg-emerald-900 hover:bg-emerald-950 text-white h-12 text-base font-primary font-medium"
-          >
-            Sign in with Google
-          </Button>
+          {/* Google Sign-In Button will be rendered here */}
+          <div id="google-signin-btn" className="flex justify-center"></div>
         </div>
       </div>
     </div>

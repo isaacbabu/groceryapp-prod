@@ -1,49 +1,20 @@
-import React, { useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { axiosInstance } from '@/App';
-import { toast } from 'sonner';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthCallback = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const hasProcessed = useRef(false);
 
   useEffect(() => {
-    if (hasProcessed.current) return;
-    hasProcessed.current = true;
-
-    const processAuth = async () => {
-      try {
-        const hash = location.hash.substring(1);
-        const params = new URLSearchParams(hash);
-        const sessionId = params.get('session_id');
-
-        if (!sessionId) {
-          toast.error('Invalid authentication');
-          navigate('/login');
-          return;
-        }
-
-        const response = await axiosInstance.post('/auth/session', { session_id: sessionId });
-        const user = response.data.user;
-
-        toast.success(`Welcome, ${user.name}!`);
-        navigate('/', { state: { user }, replace: true });
-      } catch (error) {
-        console.error('Auth error:', error);
-        toast.error('Authentication failed');
-        navigate('/login');
-      }
-    };
-
-    processAuth();
-  }, [location, navigate]);
+    // This page is no longer needed with Google Identity Services
+    // Redirect to login page
+    navigate('/login', { replace: true });
+  }, [navigate]);
 
   return (
     <div className="h-screen flex items-center justify-center bg-zinc-50">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-900 mx-auto"></div>
-        <p className="mt-4 text-zinc-600 font-secondary">Authenticating...</p>
+        <p className="mt-4 text-zinc-600 font-secondary">Redirecting...</p>
       </div>
     </div>
   );
